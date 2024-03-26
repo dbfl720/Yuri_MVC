@@ -1,7 +1,20 @@
+﻿using Microsoft.EntityFrameworkCore;
+using YuriWeb.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//db 연결 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+
+
 
 var app = builder.Build();
 
