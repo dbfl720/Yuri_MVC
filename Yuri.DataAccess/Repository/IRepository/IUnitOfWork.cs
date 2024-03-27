@@ -1,10 +1,10 @@
 ﻿namespace Yuri.DataAccess.Repository.IRepository
 {
-	public interface IUnitOfWork
-	{
+    public interface IUnitOfWork
+    {
 
-		ICategoryRepository Category { get; }
-
-		void Save();
-	}
+        ICategoryRepository Category { get; }
+        IProductRepository Product { get; }
+        void Save();
+    }
 }
