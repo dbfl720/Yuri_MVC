@@ -1,4 +1,4 @@
-namespace YuriWeb.Models
+namespace Yuri.Models
 {
     public class ErrorViewModel
     {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace YuriWeb.Models
+namespace Yuri.Models
 {
 	public class Category
 	{

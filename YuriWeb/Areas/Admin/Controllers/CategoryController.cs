@@ -1,26 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using YuriWeb.Data;
-using YuriWeb.Models;
+using Yuri.DataAccess.Repository.IRepository;
+using Yuri.Models;
 
-namespace YuriWeb.Controllers
+namespace YuriWeb.Areas.Admin.Controllers
 {
+	[Area("Admin")]
 	public class CategoryController : Controller
 	{
 
-		private readonly ApplicationDbContext _db;
+		private readonly IUnitOfWork _unitOfWork;
 
 
-		public CategoryController(ApplicationDbContext db)
+		public CategoryController(IUnitOfWork unitOfWork)
 		{
 
-			_db = db;
+			_unitOfWork = unitOfWork;
 		}
 
 
 		public IActionResult Index()
 		{
 
-			List<Category> objCategoryList = _db.Categories.ToList();
+			List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
 			return View(objCategoryList);
 		}
 
@@ -48,8 +49,8 @@ namespace YuriWeb.Controllers
 
 			if (ModelState.IsValid)
 			{
-				_db.Categories.Add(obj); // keeping track of what it has to add
-				_db.SaveChanges(); // actually go to the database and create that category 
+				_unitOfWork.Category.Add(obj); // keeping track of what it has to add
+				_unitOfWork.Save(); // actually go to the database and create that category 
 				TempData["success"] = "Category created successfully.";
 				return RedirectToAction("Index"); // RedirectionToAction을 INDEX로 한 이유: ADD한 것을 INDEX메소드에서 DB에 RELOAD해야하니깐.
 
@@ -70,7 +71,7 @@ namespace YuriWeb.Controllers
 			{
 				return NotFound();
 			}
-			Category? categoryFromDb = _db.Categories.Find(id);
+			Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 			//Category? categoryFromDb1 = _db.Categories.FirstOrDefault(u => u.Id == id);
 			//Category? categoryFromDb2 = _db.Categories.Where(u => u.Id == id).FirstOrDefault();
 
@@ -91,8 +92,8 @@ namespace YuriWeb.Controllers
 
 			if (ModelState.IsValid)
 			{
-				_db.Categories.Update(obj); // keeping track of what it has to add
-				_db.SaveChanges(); // actually go to the database and create that category 
+				_unitOfWork.Category.Update(obj); // keeping track of what it has to add
+				_unitOfWork.Save(); // actually go to the database and create that category 
 				TempData["success"] = "Category updated successfully.";
 				return RedirectToAction("Index"); // RedirectionToAction을 INDEX로 한 이유: ADD한 것을 INDEX메소드에서 DB에 RELOAD해야하니깐.
 
@@ -114,7 +115,7 @@ namespace YuriWeb.Controllers
 			{
 				return NotFound();
 			}
-			Category? categoryFromDb = _db.Categories.Find(id);
+			Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 
 
 			if (categoryFromDb == null)
@@ -129,13 +130,13 @@ namespace YuriWeb.Controllers
 		[HttpPost, ActionName("Delete")]
 		public IActionResult DeletePOST(int? id)
 		{
-			Category? obj = _db.Categories.Find(id);
+			Category? obj = _unitOfWork.Category.Get(u => u.Id == id);
 			if (obj == null)
 			{
 				return NotFound();
 			}
-			_db.Categories.Remove(obj);
-			_db.SaveChanges(); // actually go to the database and create that category 
+			_unitOfWork.Category.Remove(obj);
+			_unitOfWork.Save(); // actually go to the database and create that category 
 			TempData["success"] = "Category deleted successfully.";
 			return RedirectToAction("Index"); // RedirectionToAction을 INDEX로 한 이유: ADD한 것을 INDEX메소드에서 DB에 RELOAD해야하니깐.
 
